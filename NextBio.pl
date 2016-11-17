@@ -19,6 +19,7 @@ GetOptions(
 
 		  );
  
+$handle=NextBio::Utilities->new();
 
 if($opts{help} or !defined $opts{function})
 {
@@ -27,73 +28,61 @@ if($opts{help} or !defined $opts{function})
 }
 elsif($opts{function} eq 'Fastq_uniq')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fastq_uniq($opts{fastq})
 }
 
 elsif($opts{function} eq 'Fasta_uniq')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fasta_uniq($opts{fasta},$opts{header})
 }
 
 elsif($opts{function} eq 'Fasta_sort')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fasta_sort($opts{fasta},$opts{order})
 }
 
 elsif($opts{function} eq 'Fasta_length')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fasta_length($opts{fasta},$opts{length},$opts{order})
 }
 
 elsif($opts{function} eq 'Fasta_share')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fasta_share($opts{list})
 }
 
 elsif($opts{function} eq 'Fasta_extract')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fasta_extract($opts{fasta},$opts{list})
 }
 
 elsif($opts{function} eq 'Fasta_exclude')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fasta_exclude($opts{fasta},$opts{list})
 }
 
 elsif($opts{function} eq 'Fastq2Fasta')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->Fastq2Fasta($opts{fastq})
 }
 
 elsif($opts{function} eq 'phy_clean')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->phy_clean($opts{phy},$opts{threshold})
 }
 
 elsif($opts{function} eq 'overhang_check')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->overhang_check($opts{fastq},$opts{overhang})
 }
 
 elsif($opts{function} eq 'file_rename')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->file_rename($opts{list})
 }
 
 elsif($opts{function} eq 'N50_count')
 {
-	$handle=NextBio::Utilities->new();
 	$handle->N50_count($opts{fasta})
 }
 
@@ -101,7 +90,7 @@ elsif($opts{function} eq 'N50_count')
 sub help
 { 
 my $usage=	
-"=========================================================================
+"===================================================================================
 --help 		print this usage
 --function	select function to use
 --fastq 	fastq file to process
@@ -115,6 +104,7 @@ my $usage=
 --threshold 	floating point value of missing data allowed for samples (default 0.9999)
 
 Deamon uage:
+#################################  Build-in function ##############################
 #get help message 
 ./NextBio.pl --help
 
@@ -145,12 +135,19 @@ Deamon uage:
 #remove samples contains only Ns and sort the samples based on number of informative bases
 ./NextBio.pl --function phy_clean --phy ../Pcp.phy --threshold 0.8 >../Pcp_60_cleaned.phy 
 
-#remove sequences not start with expected enzyme cutting overhang
+#remove sequences not start with expected enzyme cutting overhang in fastq file
 ./NextBio.pl --function overhang_check --fastq test.q --overhang TTCA
 
-#rename files in current dir, format for list 'currentname  newname', no space is allowed in the file names
-./NextBio.pl --function file_rename --list list.txt
-=========================================================================
+#rename files in current dir, format for list 'currentname	newname', seperate by tab
+./NextBio.pl --function file_rename --list list.
+
+#calculate cotig N50
+./NextBio.pl --function N50_count --fasta test.fa
+
+################################# Function requires dependency ####################
+
+===================================================================================
+
 
 ";
 	print $usage;

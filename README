@@ -38,7 +38,22 @@ it under the same terms as Perl itself, either Perl version 5.18.2 or,
 at your option, any later version of Perl 5 you may have available.
 
 =========================================================================
-Uage:
+usage
+===================================================================================
+--help 		print this usage
+--function	select function to use
+--fastq 	fastq file to process
+--fasta		fasta file to process
+--header	string used to modify fasta header, use with fasta_uniq
+--order		up or down used with fasta_sort, default is upward
+--length    	read length less than specified value will be removed
+--list		Contains list of file names or fasta header
+--phy 		.phy file to process
+--overhang 	enzyme overhang you want to detect on 5'
+--threshold 	floating point value of missing data allowed for samples (default 0.9999)
+
+Deamon uage:
+#################################  Build-in function ##############################
 #get help message 
 ./NextBio.pl --help
 
@@ -69,9 +84,15 @@ Uage:
 #remove samples contains only Ns and sort the samples based on number of informative bases
 ./NextBio.pl --function phy_clean --phy ../Pcp.phy --threshold 0.8 >../Pcp_60_cleaned.phy 
 
-#remove sequences not start with expected enzyme cutting overhang
+#remove sequences not start with expected enzyme cutting overhang in fastq file
 ./NextBio.pl --function overhang_check --fastq test.q --overhang TTCA
 
-#rename files in current dir, format for list 'currentname  newname', no space is allowed in the file names
-./NextBio.pl --function file_rename --list list.txt
-=========================================================================
+#rename files in current dir, format for list 'currentname	newname', seperate by tab
+./NextBio.pl --function file_rename --list list.
+
+#calculate cotig N50
+./NextBio.pl --function N50_count --fasta test.fa
+
+################################# Function requires dependency ####################
+
+===================================================================================
