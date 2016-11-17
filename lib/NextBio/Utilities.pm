@@ -1,6 +1,6 @@
 package NextBio::Utilities;
 
-use 5.018002;
+
 use strict;
 use warnings;
 
