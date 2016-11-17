@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/NextBio-Utilities.t
+lib/NextBio/Utilities.pm
