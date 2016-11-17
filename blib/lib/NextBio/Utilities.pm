@@ -117,7 +117,7 @@ sub Fasta_uniq
 		{
 			
 			print $bash{$line},"\n";
-			$line=~s/(.{60})/$1\n/g;
+			$line=~s/(.{80})/$1\n/g;
 			print $line,"\n";
 		}
 	}
@@ -165,7 +165,7 @@ sub Fasta_sort
 	for(my $count=0;$count<$#content;$count+=2)
 	{
 		my $length=length($content[$count+1]);
-		$content[$count+1]=~s/(.{60})/$1\n/g;
+		$content[$count+1]=~s/(.{80})/$1\n/g;
 		my $temp=$content[$count]."\n".$content[$count+1]."\n";
 		$hash{$temp}=$length;
 	}
@@ -229,7 +229,7 @@ sub Fasta_length
 		for(my $count=0;$count<$#content;$count+=2)
 	{
 		my $leng=length($content[$count+1]);
-		$content[$count+1]=~s/(.{60})/$1\n/g;
+		$content[$count+1]=~s/(.{80})/$1\n/g;
 		my $temp=$content[$count]."\n".$content[$count+1]."\n";
 		$hash{$temp}=$leng if $leng >= $length;
 	}
@@ -263,20 +263,54 @@ sub Fasta_share
 	my @file=<LIST>;
 	my $number=@file;
 	my %hash;
-	foreach my $line(@file)
+	my ($line,$line2);
+	my $share=0;
+	foreach $line(@file)
 	{
 		chomp $line;
 		open(INPUT,"$line");
+		$share++;
 		my @temp=<INPUT>;
-		for(my $count=0;$count<$#temp;$count+=2)
+		my $count=0;
+		my @content=();
+		foreach $line2(@temp)
 		{
-			if($hash{$temp[$count+1]}) 
+			
+			chomp $line2;
+			if($line2=~/>/)
 			{
-				$hash{$temp[$count+1]}=$hash{$temp[$count+1]}+1;
+				unless ($count==0)
+				{
+					$count++
+				}
+				$content[$count]=$line2;
+				$count++;
 			}
 			else
 			{
-				$hash{$temp[$count+1]}=1;
+				if(defined $content[$count])
+				{
+					$content[$count]=$content[$count].$line2;
+				}
+				else
+				{
+					$content[$count]=$line2;
+				}
+			}
+
+		}
+		for(my $count=0;$count<$#content;$count+=2)
+		{
+			if(defined $hash{$content[$count+1]} && $hash{$content[$count+1]}==($share-1)) 
+			{
+				$hash{$content[$count+1]}=$share;
+			}
+			else
+			{	
+				unless(defined $hash{$content[$count+1]})
+					{
+						$hash{$content[$count+1]}=1;
+					}
 			}
 		}
 		close INPUT;
@@ -284,9 +318,11 @@ sub Fasta_share
 	my $header=1;
 	foreach my $line(keys %hash)
 	{
+
 		if($hash{$line} == $number)
 		{
-			print ">shared_seq",$header,"\n",$line;
+			$line=~s/(.{80})/$1\n/g;
+			print ">shared_seq",$header,"\n",$line,"\n";
 			$header++;
 		}
 	}
@@ -303,15 +339,44 @@ sub Fasta_extract
 	my $list=shift;
 	open(FASTA,"$fasta");
 	open(LIST,"$list");
-	my @fasta=<FASTA>;
+	my @temp=<FASTA>;
 	my @list=<LIST>;
 	my %hash;
+	my @fasta;
+	my $count=0;
+	foreach my $line(@temp)
+	{
+		chomp $line;
+		if($line=~/>/)
+		{
+			unless ($count==0)
+			{
+				$count++
+			}
+			$fasta[$count]=$line;
+			$count++;
+		}
+		else
+		{
+			if(defined $fasta[$count])
+			{
+				$fasta[$count]=$fasta[$count].$line;
+			}
+			else
+			{
+				$fasta[$count]=$line;
+			}
+		}
+
+	}
 	for(my $count=0;$count<$#fasta;$count+=2)
 	{
 		chomp $fasta[$count];
 		$fasta[$count]=~/>(.+)/;
-		my $temp=$fasta[$count]."\n".$fasta[$count+1];
-		$hash{$1}=$temp
+		my $key=$1;
+		$fasta[$count+1]=~s/(.{80})/$1\n/g;
+		my $temp=$fasta[$count]."\n".$fasta[$count+1]."\n";
+		$hash{$key}=$temp
 	}
 	foreach my $line(@list)
 	{
@@ -335,20 +400,54 @@ sub Fasta_exclude
 	my $list=shift;
 	open(FASTA,"$fasta");
 	open(LIST,"$list");
-	my @fasta=<FASTA>;
+	my @temp=<FASTA>;
 	my @list=<LIST>;
 	my %hash;
+	my @fasta;
+	my $count=0;
+	foreach my $line(@temp)
+	{
+		chomp $line;
+		if($line=~/>/)
+		{
+			unless ($count==0)
+			{
+				$count++
+			}
+			$fasta[$count]=$line;
+			$count++;
+		}
+		else
+		{
+			if(defined $fasta[$count])
+			{
+				$fasta[$count]=$fasta[$count].$line;
+			}
+			else
+			{
+				$fasta[$count]=$line;
+			}
+		}
+
+	}
 	for(my $count=0;$count<$#fasta;$count+=2)
 	{
 		chomp $fasta[$count];
 		$fasta[$count]=~/>(.+)/;
-		my $temp=$fasta[$count]."\n".$fasta[$count+1];
-		$hash{$1}=$temp
+		my $key=$1;
+		$fasta[$count+1]=~s/(.{80})/$1\n/g;
+		my $temp=$fasta[$count]."\n".$fasta[$count+1]."\n";
+		$hash{$key}=$temp;
 	}
+	my %hash2;
 	foreach my $line(@list)
 	{
 		chomp $line;
-		unless($hash{$line})
+		$hash2{$line}=1;
+	}
+	foreach my $line(keys %hash)
+	{
+		unless($hash2{$line})
 		{
 			print $hash{$line}
 		}
@@ -455,8 +554,8 @@ sub file_rename
 	open(LIST,"$list");
 	for my $line(<LIST>)
 	{
-		my @name=split(" ",$line);
-		`mv $name[0] $name[1]`
+		my @name=split("\t",$line);
+		`mv "$name[0]" "$name[1]"`
 	}
 	close LIST;
 }
@@ -466,11 +565,38 @@ sub N50_count
 	shift;
 	my $file=shift;
 	open(FILE,"$file");
-	my @content=<FILE>;
+	my @temp=<FILE>;
 	my %hash;
 	my $key;
 	my $sum=0;
 	my $N50=0;
+	my @content;
+	my $count=0;
+	foreach my $line(@temp)
+	{
+		chomp $line;
+		if($line=~/>/)
+		{
+			unless ($count==0)
+			{
+				$count++
+			}
+			$content[$count]=$line;
+			$count++;
+		}
+		else
+		{
+			if(defined $content[$count])
+			{
+				$content[$count]=$content[$count].$line;
+			}
+			else
+			{
+				$content[$count]=$line;
+			}
+		}
+
+	}
 	for(my $count=0;$count<$#content;$count+=2)
 	{
 		my $temp=$content[$count].$content[$count+1];
@@ -483,7 +609,7 @@ sub N50_count
 		$N50+=$hash{$key};
 		if($N50 > $sum/2)
 		{
-			print "N50 is: $hash{$key}\n";
+			print "N50 is: >= $hash{$key}\n";
 			last;
 		}
 	}

@@ -116,40 +116,40 @@ my $usage=
 
 Deamon uage:
 #get help message 
-./Fastx_Utilites.pl --help
+./NextBio.pl --help
 
 #get uniq fastq file
-./Fastx_Utilites.pl --Function Fastq_uniq --fastq test.fq
+./NextBio.pl --Function Fastq_uniq --fastq test.fq
 
 #get uniq fasta file and rename header
-./Fastx_Utilites.pl --Function Fasta_uniq --fasta test.fa --header Mine
+./NextBio.pl --Function Fasta_uniq --fasta test.fa --header Mine
 
 #sort fasta file based on their length
-./Fastx_Utilites.pl --function Fasta_sort --fasta test.fa --order down
+./NextBio.pl --function Fasta_sort --fasta test.fa --order down
 
 #filter fasta file based on length
-./Fastx_Utilites.pl --function Fasta_length --fasta test.fa --length 10
+./NextBio.pl --function Fasta_length --fasta test.fa --length 10
 
 #extract fasta file by providing a list of header ID (no >)
-./Fastx_Utilites.pl --function Fasta_extract --fasta test.fa --list
+./NextBio.pl --function Fasta_extract --fasta test.fa --list
 
 #exclude entries from fasta file by providing a list of header ID (no >)
-./Fastx_Utilites.pl --function Fasta_exclude --fasta test.fa --list
+./NextBio.pl --function Fasta_exclude --fasta test.fa --list
 
 #transform fastq to fasta
-./Fastx_Utilites.pl --function Fastq2Fasta --fastq test.fq
+./NextBio.pl --function Fastq2Fasta --fastq test.fq
 
 #find sequences shared by multiple fasta file, by providing a list of file names, each filename on one line
-./Fastx_Utilites.pl --function Fasta_share --list list.txt
+./NextBio.pl --function Fasta_share --list list.txt
 
 #remove samples contains only Ns and sort the samples based on number of informative bases
-./Fastx_Utilites.pl --function phy_clean --phy ../Pcp.phy --threshold 0.8 >../Pcp_60_cleaned.phy 
+./NextBio.pl --function phy_clean --phy ../Pcp.phy --threshold 0.8 >../Pcp_60_cleaned.phy 
 
 #remove sequences not start with expected enzyme cutting overhang
-./Fastx_Utilites.pl --function overhang_check --fastq test.q --overhang TTCA
+./NextBio.pl --function overhang_check --fastq test.q --overhang TTCA
 
 #rename files in current dir, format for list 'currentname  newname', no space is allowed in the file names
-./Fastx_Utilites.pl --function file_rename --list list.txt
+./NextBio.pl --function file_rename --list list.txt
 =========================================================================
 
 ";
