@@ -187,12 +187,12 @@ TO_INST_PM = NextBio.pl \
 	lib/.DS_Store \
 	lib/NextBio/Utilities.pm
 
-PM_TO_BLIB = NextBio.pl \
-	$(INST_LIB)/NextBio/NextBio.pl \
+PM_TO_BLIB = lib/.DS_Store \
+	blib/lib/.DS_Store \
 	lib/NextBio/Utilities.pm \
 	blib/lib/NextBio/Utilities.pm \
-	lib/.DS_Store \
-	blib/lib/.DS_Store
+	NextBio.pl \
+	$(INST_LIB)/NextBio/NextBio.pl
 
 
 # --- MakeMaker platform_constants section:
@@ -443,22 +443,22 @@ clean_subdirs :
 
 clean :: clean_subdirs
 	- $(RM_F) \
-	  mon.out core.[0-9] \
-	  $(BOOTSTRAP) pm_to_blib \
-	  pm_to_blib.ts perl.exe \
-	  $(INST_ARCHAUTODIR)/extralibs.all core.[0-9][0-9][0-9][0-9][0-9] \
-	  *$(LIB_EXT) tmon.out \
-	  *perl.core blibdirs.ts \
-	  core.*perl.*.? perlmain.c \
-	  core.[0-9][0-9] MYMETA.json \
-	  perl so_locations \
-	  $(BASEEXT).exp core.[0-9][0-9][0-9] \
-	  $(BASEEXT).def $(BASEEXT).bso \
-	  *$(OBJ_EXT) core \
-	  lib$(BASEEXT).def MYMETA.yml \
-	  perl$(EXE_EXT) $(MAKE_APERL_FILE) \
-	  $(BASEEXT).x core.[0-9][0-9][0-9][0-9] \
-	  $(INST_ARCHAUTODIR)/extralibs.ld 
+	  $(BASEEXT).bso core.[0-9][0-9] \
+	  lib$(BASEEXT).def $(INST_ARCHAUTODIR)/extralibs.all \
+	  MYMETA.json perl.exe \
+	  core perl \
+	  $(MAKE_APERL_FILE) $(BASEEXT).exp \
+	  core.[0-9][0-9][0-9][0-9][0-9] *$(OBJ_EXT) \
+	  *perl.core $(BASEEXT).def \
+	  core.[0-9][0-9][0-9][0-9] blibdirs.ts \
+	  core.*perl.*.? MYMETA.yml \
+	  pm_to_blib.ts core.[0-9][0-9][0-9] \
+	  perlmain.c *$(LIB_EXT) \
+	  tmon.out $(BOOTSTRAP) \
+	  perl$(EXE_EXT) pm_to_blib \
+	  mon.out $(INST_ARCHAUTODIR)/extralibs.ld \
+	  so_locations core.[0-9] \
+	  $(BASEEXT).x 
 	- $(RM_RF) \
 	  blib 
 	- $(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD) $(DEV_NULL)
@@ -473,7 +473,7 @@ realclean_subdirs :
 # Delete temporary files (via clean) and also delete dist files
 realclean purge ::  clean realclean_subdirs
 	- $(RM_F) \
-	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
+	  $(MAKEFILE_OLD) $(FIRST_MAKEFILE) 
 	- $(RM_RF) \
 	  $(DISTVNAME) 
 
@@ -851,9 +851,9 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  NextBio.pl $(INST_LIB)/NextBio/NextBio.pl \
+	  lib/.DS_Store blib/lib/.DS_Store \
 	  lib/NextBio/Utilities.pm blib/lib/NextBio/Utilities.pm \
-	  lib/.DS_Store blib/lib/.DS_Store 
+	  NextBio.pl $(INST_LIB)/NextBio/NextBio.pl 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

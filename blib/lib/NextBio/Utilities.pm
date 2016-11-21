@@ -812,55 +812,65 @@ sub ploidy
 	my $length=@fastq;
 	my $depth=shift;
 	my $index=shift;
+	my $stage=shift;
+	$stage=0 unless defined $stage;
 	`mkdir Bowtie_index`;
-	open(BOWTIE2_BUILD,"|bowtie2-build $fasta ./Bowtie_index/$index" ) or die "can not open bowtie2-build\n";
-	select(BOWTIE2_BUILD);
-	close(BOWTIE2_BUILD);
-	if($length==1)
+	unless($stage==2 ||$stage==3)
 	{
-		open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -U $fastq[0] -S  $index.mapped.sam") or die "can not open bowtie2!\n";
-		select(BOWTIE2);
-		close(BOWTIE2);
+		open(BOWTIE2_BUILD,"|bowtie2-build $fasta ./Bowtie_index/$index" ) or die "can not open bowtie2-build\n";
+		select(BOWTIE2_BUILD);
+		close(BOWTIE2_BUILD);
 	}
-	elsif($length ==2)
+	unless($stage==3)	
 	{
-		open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -1 $fastq[0] -2 $fastq[1] -S  $index.mapped.sam") or die "Error generating $index.mapped.sam file!\n";
-		select(BOWTIE2);
-		close(BOWTIE2);
-	}
-	open(SAM1,"|samtools view -bS $index.mapped.sam >$index.map.bam") or die "Error generating $index.map.sam file!\n";
-	select(SAM1);
-	close(SAM1);
+		if($length==1)
+		{
+			open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -U $fastq[0] -S  $index.mapped.sam") or die "can not open bowtie2!\n";
+			select(BOWTIE2);
+			close(BOWTIE2);
+		}
+		elsif($length ==2)
+		{
+			open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -1 $fastq[0] -2 $fastq[1] -S  $index.mapped.sam") or die "Error generating $index.mapped.sam file!\n";
+			select(BOWTIE2);
+			close(BOWTIE2);
+		}
+		open(SAM1,"|samtools view -bS $index.mapped.sam >$index.map.bam") or die "Error generating $index.map.sam file!\n";
+		select(SAM1);
+		close(SAM1);
 
-	open(SAM2,"|samtools view -b -F 4 $index.map.bam >$index.mapped.bam") or die "Error generating $index.mapped.bam file!\n";
-	select(SAM2);
-	close(SAM2);
+		open(SAM2,"|samtools view -b -F 4 $index.map.bam >$index.mapped.bam") or die "Error generating $index.mapped.bam file!\n";
+		select(SAM2);
+		close(SAM2);
 
-	open(SAM3,"|samtools sort $index.mapped.bam -o $index.sorted.bam") or die "Error generating $index.sorted.bam file!\n";
-	select(SAM3);
-	close(SAM3);
+		open(SAM3,"|samtools sort $index.mapped.bam -o $index.sorted.bam") or die "Error generating $index.sorted.bam file!\n";
+		select(SAM3);
+		close(SAM3);
 
-	open(SAM4,"|samtools index $index.sorted.bam") or die "Error generating index file for $index.sorted.bam !\n";
-	select(SAM4);
-	close(SAM4);
-
-	open(SAM5,"|samtools mpileup -uf $fasta $index.sorted.bam|bcftools call -c -v >$index.ploidy.vcf") or die "Error generating final cvf file!\n";
-	select(SAM5);
-	close(SAM5);
-
-	open(VCF,"$index.ploidy.vcf") or die "can't find vcf file!\n";
-	open(OUT,">$index.allelic.txt");
-	foreach my $line(<VCF>)
+		open(SAM4,"|samtools index $index.sorted.bam") or die "Error generating index file for $index.sorted.bam !\n";
+		select(SAM4);
+		close(SAM4);	
+	
+		open(SAM5,"|samtools mpileup -uf $fasta $index.sorted.bam|bcftools call -c -v >$index.ploidy.vcf") or die "Error generating final cvf file!\n";
+		select(SAM5);
+		close(SAM5);
+	}		
+	unless($stage==1 ||$stage==2)	
 	{
-		if($line=~/DP4=(\d+),(\d+),(\d+),(\d+)/ && ($3+$4+$1+$2)>0)
-	 	{
-	 		my $out=($1+$2)/($3+$4+$1+$2);
-	 	    $line=~/DP=(\d+)/;
-	 	    if($1>=$depth)
-	 	    {
-	 	    	print OUT $out,"\n" if ($out >=0.2 && $out <=0.8);
-	 	    }	 	 
-	    }
+		open(VCF,"$index.ploidy.vcf") or die "can't find vcf file!\n";
+		open(OUT,">$index.allelic.txt");
+		foreach my $line(<VCF>)
+		{
+			if($line=~/DP4=(\d+),(\d+),(\d+),(\d+)/ && ($3+$4+$1+$2)>0)
+		 	{
+	 			my $out=($1+$2)/($3+$4+$1+$2);
+	 		    $line=~/DP=(\d+)/;
+	 		    if($1>=$depth)
+	 		    {
+	 		    	print OUT $out,"\n" if ($out >=0.2 && $out <=0.8);
+	 		    }	 	 
+	    	}
+		}
 	}
 	close VCF;
 	close OUT;
