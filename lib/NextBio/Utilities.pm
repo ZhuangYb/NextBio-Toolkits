@@ -50,7 +50,11 @@ sub Fastq_uniq
 	my %bash;
 	for($count=1;$count<=($#content-2);$count+=4)
 	{
-		$bash{$content[$count]}=$content[$count-1].$content[$count].$content[$count+1].$content[$count+2]
+		chomp $content[$count-1];
+		chomp $content[$count];
+		chomp $content[$count+1];
+		chomp $content[$count+2];
+		$bash{$content[$count]}=$content[$count-1]."\n".$content[$count]."\n".$content[$count+1]."\n".$content[$count+2]."\n";
 	}
 	foreach my $line(keys %bash)
 	{
@@ -799,6 +803,84 @@ V GUU GUC GUA GUG
 
 
 ###########################
+sub ploidy
+{
+	shift;
+	my $fasta=shift;
+	my $fastq=shift;
+	my @fastq=@{$fastq};
+	my $length=@fastq;
+	my $depth=shift;
+	my $index=shift;
+	`mkdir Bowtie_index`;
+	open(BOWTIE2_BUILD,"|bowtie2-build $fasta ./Bowtie_index/$index" ) or die "can not open bowtie2-build\n";
+	select(BOWTIE2_BUILD);
+	close(BOWTIE2_BUILD);
+	if($length==1)
+	{
+		open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -U $fastq[0] -S  $index.mapped.sam") or die "can not open bowtie2!\n";
+		select(BOWTIE2);
+		close(BOWTIE2);
+	}
+	elsif($length ==2)
+	{
+		open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -1 $fastq[0] -2 $fastq[1] -S  $index.mapped.sam") or die "Error generating $index.mapped.sam file!\n";
+		select(BOWTIE2);
+		close(BOWTIE2);
+	}
+	open(SAM1,"|samtools view -bS $index.mapped.sam >$index.map.bam") or die "Error generating $index.map.sam file!\n";
+	select(SAM1);
+	close(SAM1);
+
+	open(SAM2,"|samtools view -b -F 4 $index.map.bam >$index.mapped.bam") or die "Error generating $index.mapped.bam file!\n";
+	select(SAM2);
+	close(SAM2);
+
+	open(SAM3,"|samtools sort $index.mapped.bam -o $index.sorted.bam") or die "Error generating $index.sorted.bam file!\n";
+	select(SAM3);
+	close(SAM3);
+
+	open(SAM4,"|samtools index $index.sorted.bam") or die "Error generating index file for $index.sorted.bam !\n";
+	select(SAM4);
+	close(SAM4);
+
+	open(SAM5,"|samtools mpileup -uf $fasta $index.sorted.bam|bcftools call -c -v >$index.ploidy.vcf") or die "Error generating final cvf file!\n";
+	select(SAM5);
+	close(SAM5);
+
+	open(VCF,"$index.ploidy.vcf") or die "can't find vcf file!\n";
+	open(OUT,">$index.allelic.txt");
+	foreach my $line(<VCF>)
+	{
+		if($line=~/DP4=(\d+),(\d+),(\d+),(\d+)/ && ($3+$4+$1+$2)>0)
+	 	{
+	 		my $out=($1+$2)/($3+$4+$1+$2);
+	 	    $line=~/DP=(\d+)/;
+	 	    if($1>=$depth)
+	 	    {
+	 	    	print OUT $out,"\n" if ($out >=0.2 && $out <=0.8);
+	 	    }	 	 
+	    }
+	}
+	close VCF;
+	close OUT;
+	open(R,"|R --no-restore --no-save --slave") or die "Fail to open R binary file!\n";
+	select(R);
+	print <<CODE;
+pdf("$index.ploidy_plot.pdf")
+a<-scan("$index.allelic.txt",what="")
+a<-as.numeric(a)
+intervals<-cut(a,breaks=seq(0.2,0.8,by=0.05))
+b<-as.data.frame(table(intervals))
+lim<-with(b,max(Freq))
+lim<-1.2*lim
+with(b,barplot(Freq,main="$index",cex.main=0.8,las=3,ylim=c(0,lim),font.main=2,names.arg=intervals,cex.axis = 0.5,cex.names=0.45 ))
+dev.off()
+q()
+CODE
+	close(R);
+}
+###########################
 
 
 
@@ -813,7 +895,6 @@ NextBio::Utilities - Perl extension for blah blah blah
 =head1 SYNOPSIS
 
   use NextBio::Utilities;
-  blah blah blah
 
 =head1 DESCRIPTION
 
@@ -821,7 +902,6 @@ Stub documentation for NextBio::Utilities, created by h2xs. It looks like the
 author of the extension was negligent enough to leave the stub
 unedited.
 
-Blah blah blah.
 
 =head2 EXPORT
 
@@ -842,11 +922,11 @@ If you have a web site set up for your module, mention it here.
 
 =head1 AUTHOR
 
-Yongbin, E<lt>Yongbin@apple.comE<gt>
+Yongbin, E<lt>Yongbin.zhuang@colorado.edu<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2016 by Yongbin
+Copyright (C) 2016 by Yongbin Zhuang
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.18.2 or,

@@ -2,12 +2,12 @@
 use strict;
 use NextBio::Utilities;
 use Getopt::Long;
-my  %opts;
-my  $handle;
+my  (%opts,@fastq);
+my  ($handle);
 GetOptions(
 		   'help'	    =>\$opts{help},
 		   'function=s' =>\$opts{function},
-		   'fastq=s'    =>\$opts{fastq},
+		   'fastq=s{1,2}'    =>\@fastq,
 		   'fasta=s'    =>\$opts{fasta},
 		   'header=s'   =>\$opts{header},
 		   'order=s'    =>\$opts{order},
@@ -16,6 +16,7 @@ GetOptions(
 		   'phy=s'		=>\$opts{phy},
 		   'overhang=s'	=>\$opts{overhang},
 		   'threshold=f'  =>\$opts{threshold},
+		   'depth=i'  =>\$opts{depth},		   
 
 		  );
  
@@ -28,7 +29,7 @@ if($opts{help} or !defined $opts{function})
 }
 elsif($opts{function} eq 'Fastq_uniq')
 {
-	$handle->Fastq_uniq($opts{fastq})
+	$handle->Fastq_uniq($fastq[0])
 }
 
 elsif($opts{function} eq 'Fasta_uniq')
@@ -63,7 +64,7 @@ elsif($opts{function} eq 'Fasta_exclude')
 
 elsif($opts{function} eq 'Fastq2Fasta')
 {
-	$handle->Fastq2Fasta($opts{fastq})
+	$handle->Fastq2Fasta($fastq[0])
 }
 
 elsif($opts{function} eq 'phy_clean')
@@ -73,7 +74,7 @@ elsif($opts{function} eq 'phy_clean')
 
 elsif($opts{function} eq 'overhang_check')
 {
-	$handle->overhang_check($opts{fastq},$opts{overhang})
+	$handle->overhang_check($fastq[0],$opts{overhang})
 }
 
 elsif($opts{function} eq 'file_rename')
@@ -91,6 +92,11 @@ elsif($opts{function} eq 'translate')
 	$handle->translate($opts{fasta})
 }
 
+elsif($opts{function} eq 'ploidy')
+{
+	$handle->ploidy($opts{fasta},\@fastq,$opts{depth},$opts{header})
+}
+
 sub help
 { 
 my $usage=	
@@ -106,6 +112,7 @@ my $usage=
 --phy 		.phy file to process
 --overhang 	enzyme overhang you want to detect on 5'
 --threshold 	floating point value of missing data allowed for samples (default 0.9999)
+--depth		minimum depth for a snp to be involved in ploidy analysis
 
 Deamon uage:
 #################################  Build-in function ##############################
@@ -153,6 +160,12 @@ Deamon uage:
 
 
 ################################# Function requires dependency ####################
+****###########################  R, samtools, bcftools, bowtie2####################
+#ploidy_plot analysis: single end read
+./NextBio.pl --function ploidy --fasta ref.fa --fastq test.fq --depth 30 --header test
+#ploidy_plot analysis: paired end reads
+./NextBio.pl --function ploidy --fasta ref.fa --fastq test1.fq test2.fq --depth 30 --header test
+
 
 ===================================================================================
 
