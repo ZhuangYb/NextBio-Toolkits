@@ -18,7 +18,6 @@ To install this module type the following:
 
    perl Makefile.PL
    make
-   make test
    make install
 
 DEPENDENCIES
@@ -37,7 +36,7 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.18.2 or,
 at your option, any later version of Perl 5 you may have available.
 
-=========================================================================
+===================================================================================
 usage
 ===================================================================================
 --help 		print this usage
@@ -51,6 +50,7 @@ usage
 --phy 		.phy file to process
 --overhang 	enzyme overhang you want to detect on 5'
 --threshold 	floating point value of missing data allowed for samples (default 0.9999)
+--depth		minimum depth for a snp to be involved in ploidy analysis
 
 Deamon uage:
 #################################  Build-in function ##############################
@@ -93,6 +93,15 @@ Deamon uage:
 #calculate cotig N50
 ./NextBio.pl --function N50_count --fasta test.fa
 
-################################# Function requires dependency ####################
+#translate DNA into protein with all six reading file_rename
+./NextBio.pl --function translate --fasta test.fa
 
+
+################################# Function requires dependency ####################
+****###########################  R, samtools, bcftools, bowtie2####################
+#ploidy_plot analysis: single end read
+./NextBio.pl --function ploidy --fasta ref.fa --fastq test.fq --depth 30 --header test
+#ploidy_plot analysis: paired end reads
+./NextBio.pl --function ploidy --fasta ref.fa --fastq test1.fq test2.fq --depth 30 --header test
 ===================================================================================
+
