@@ -618,6 +618,188 @@ sub N50_count
 }
 
 ###########################
+sub translate
+{
+	shift;
+	my $fasta=shift;
+	my $input='';
+	my @header;
+	my $count=0;
+	my %code= &store_code;
+	open(FASTA,"$fasta");
+	foreach my $line(<FASTA>)
+	{
+		chomp $line;
+		if($line=~/>/)
+		{	
+			$header[$count]=$line;
+			$count++;
+			if($input ne '')
+			{
+				$input=~tr/T/U/;
+				my($out1,$out2,$out3,$out4,$out5,$out6);
+				$out1=$input;
+				$out2=substr($input,1,(length($input)-1));
+				$out3=substr($input,2,(length($input)-2));
+				$out4=reverse $input;
+				$out4=~tr/ACUG/UGAC/;
+				$out5=substr($out4,1,(length($out4)-1));
+				$out6=substr($out4,2,(length($out4)-2));				
+				print $header[$count-2],"_plus1,\n";
+				while($out1=~/.../)
+				{
+					$out1=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+				
+				print $header[$count-2],"_plus2,\n";
+				while($out2=~/.../)
+				{
+					$out2=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+
+				print $header[$count-2],"_plus3,\n";
+				while($out3=~/.../)
+				{
+					$out3=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+
+				print $header[$count-2],"_minus1,\n";
+				while($out4=~/.../)
+				{
+					$out4=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+
+				print $header[$count-2],"_minus2,\n";
+				while($out5=~/.../)
+				{
+					$out5=~s/(...)//;
+					print $code{$1};
+				}
+				print"\n";
+
+				print $header[$count-2],"_minus3,\n";
+				while($out6=~/.../)
+				{
+					$out6=~s/(...)//;
+					print $code{$1};
+				}
+				print"\n";
+
+				$input='';
+			}
+		}
+		else
+		{ 
+			$input=$input.$line;
+		}
+	}
+	$input=~tr/T/U/;
+				my($out1,$out2,$out3,$out4,$out5,$out6);
+				$out1=$input;
+				$out2=substr($input,1,(length($input)-1));
+				$out3=substr($input,2,(length($input)-2));
+				$out4=reverse $input;
+				$out4=~tr/ACUG/UGAC/;
+				$out5=substr($out4,1,(length($out4)-1));
+				$out6=substr($out4,2,(length($out4)-2));				
+				print $header[$count-1],"_plus1,\n";
+				while($out1=~/.../)
+				{
+					$out1=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+				
+				print $header[$count-1],"_plus2,\n";
+				while($out2=~/.../)
+				{
+					$out2=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+
+				print $header[$count-1],"_plus3,\n";
+				while($out3=~/.../)
+				{
+					$out3=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+
+				print $header[$count-1],"_minus1,\n";
+				while($out4=~/.../)
+				{
+					$out4=~s/(...)//;
+					print $code{$1} ;
+				}
+				print"\n";
+
+				print $header[$count-1],"_minus2,\n";
+				while($out5=~/.../)
+				{
+					$out5=~s/(...)//;
+					print $code{$1};
+				}
+				print"\n";
+
+				print $header[$count-1],"_minus3,\n";
+				while($out6=~/.../)
+				{
+					$out6=~s/(...)//;
+					print $code{$1};
+				}
+				print"\n";
+}
+
+
+
+sub store_code
+{
+	my $code ="A GCU GCC GCA GCG
+R CGU CGC CGA CGG AGA AGG
+N AAU AAC
+D GAU GAC
+C UGU UGC
+Q CAA CAG
+E GAA GAG
+G GGU GGC GGA GGG
+H CAU CAC
+I AUU AUC AUA
+L UUA UUG CUU CUC CUA CUG
+K AAA AAG
+M AUG
+F UUU UUC
+P CCU CCC CCA CCG
+S UCU UCC UCA UCG AGU AGC
+T ACU ACC ACA ACG
+W UGG
+Y UAU UAC
+V GUU GUC GUA GUG
+/// UAA UAG UGA";
+	my %pcode;
+	my @code=split("\n",$code);
+	foreach my $line(@code)
+	{
+		my @coden=split(" ",$line);		
+   	    for(my $count=$#coden;$count>0;$count--)
+    	{
+    		 $pcode{$coden[$count]}= $coden[0]
+    	}
+    }
+	return %pcode;	
+}
+
+
+###########################
+
 
 
 1;

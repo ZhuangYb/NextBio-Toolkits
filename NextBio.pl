@@ -86,6 +86,10 @@ elsif($opts{function} eq 'N50_count')
 	$handle->N50_count($opts{fasta})
 }
 
+elsif($opts{function} eq 'translate')
+{
+	$handle->translate($opts{fasta})
+}
 
 sub help
 { 
@@ -143,6 +147,10 @@ Deamon uage:
 
 #calculate cotig N50
 ./NextBio.pl --function N50_count --fasta test.fa
+
+#translate DNA into protein with all six reading file_rename
+./NextBio.pl --function translate --fasta test.fa
+
 
 ################################# Function requires dependency ####################
 

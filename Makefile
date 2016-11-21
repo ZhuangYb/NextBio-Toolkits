@@ -184,10 +184,13 @@ PERL_ARCHIVE_AFTER =
 
 
 TO_INST_PM = NextBio.pl \
+	lib/.DS_Store \
 	lib/NextBio/Utilities.pm
 
 PM_TO_BLIB = lib/NextBio/Utilities.pm \
 	blib/lib/NextBio/Utilities.pm \
+	lib/.DS_Store \
+	blib/lib/.DS_Store \
 	NextBio.pl \
 	$(INST_LIB)/NextBio/NextBio.pl
 
@@ -440,22 +443,22 @@ clean_subdirs :
 
 clean :: clean_subdirs
 	- $(RM_F) \
-	  lib$(BASEEXT).def core \
-	  $(BASEEXT).exp so_locations \
-	  *$(LIB_EXT) $(INST_ARCHAUTODIR)/extralibs.ld \
-	  blibdirs.ts perl \
-	  perl.exe core.*perl.*.? \
-	  pm_to_blib.ts tmon.out \
-	  perl$(EXE_EXT) $(BOOTSTRAP) \
-	  MYMETA.json core.[0-9] \
-	  core.[0-9][0-9] $(MAKE_APERL_FILE) \
-	  $(INST_ARCHAUTODIR)/extralibs.all perlmain.c \
-	  $(BASEEXT).bso $(BASEEXT).def \
-	  core.[0-9][0-9][0-9][0-9] $(BASEEXT).x \
-	  *perl.core *$(OBJ_EXT) \
-	  core.[0-9][0-9][0-9][0-9][0-9] MYMETA.yml \
-	  pm_to_blib core.[0-9][0-9][0-9] \
-	  mon.out 
+	  pm_to_blib.ts MYMETA.yml \
+	  core.[0-9][0-9][0-9][0-9][0-9] $(BASEEXT).def \
+	  core.[0-9] lib$(BASEEXT).def \
+	  blibdirs.ts mon.out \
+	  *$(LIB_EXT) so_locations \
+	  $(INST_ARCHAUTODIR)/extralibs.all *perl.core \
+	  perl.exe MYMETA.json \
+	  pm_to_blib $(INST_ARCHAUTODIR)/extralibs.ld \
+	  $(BASEEXT).exp tmon.out \
+	  core.[0-9][0-9][0-9][0-9] core.[0-9][0-9][0-9] \
+	  perl core \
+	  core.[0-9][0-9] perlmain.c \
+	  core.*perl.*.? $(BASEEXT).bso \
+	  $(BOOTSTRAP) $(MAKE_APERL_FILE) \
+	  perl$(EXE_EXT) $(BASEEXT).x \
+	  *$(OBJ_EXT) 
 	- $(RM_RF) \
 	  blib 
 	- $(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD) $(DEV_NULL)
@@ -849,6 +852,7 @@ ppd :
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
 	  lib/NextBio/Utilities.pm blib/lib/NextBio/Utilities.pm \
+	  lib/.DS_Store blib/lib/.DS_Store \
 	  NextBio.pl $(INST_LIB)/NextBio/NextBio.pl 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
