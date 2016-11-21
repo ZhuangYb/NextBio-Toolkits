@@ -162,10 +162,12 @@ Deamon uage:
 
 ################################# Function requires dependency ####################
 ****###########################  R, samtools, bcftools, bowtie2####################
+
 #ploidy_plot analysis: single end read
 #stage1:buiding bowtie2 index
 #stage2:generate mapping file
-#stage3:generating vcf file and making the plot (you can change depth value and just run step3 to see the difference)
+#stage3:generating vcf file and making the plot 
+#you can change depth value and just run step3 to see the difference
 ./NextBio.pl --function ploidy --fasta ref.fa --fastq test.fq --depth 30 --header test --stage 3
 #ploidy_plot analysis: paired end reads
 ./NextBio.pl --function ploidy --fasta ref.fa --fastq test1.fq test2.fq --depth 30 --header test  --stage 3
