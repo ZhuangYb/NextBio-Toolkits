@@ -171,7 +171,7 @@ Deamon uage:
 # ploidy_plot analysis: single end read
 ./NextBio.pl --function ploidy --fasta ref.fa --fastq test.fq --depth 30 --header test --stage 3
 # ploidy_plot analysis: paired end reads
-./NextBio.pl --function ploidy --fasta ref.fa --fastq test1.fq test2.fq --depth 30 --header test  --stage 3
+./NextBio.pl --function ploidy --fasta ref.fa --fastq forward.fq reverse.fq --depth 30 --header test  --stage 3
 
 
 ===================================================================================
