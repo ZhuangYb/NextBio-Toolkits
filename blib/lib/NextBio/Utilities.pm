@@ -487,7 +487,9 @@ sub Fastq2Fasta
 ###########################
 sub Fasta_stastic
 {
-
+	shift;
+	my $test='alsdjfalsdfjalsdf';
+	print $test,"\n";
 }
 
 
@@ -497,6 +499,7 @@ sub phy_clean
 	shift;
 	my $phy=shift;
 	my $threshold=shift;
+	my $list=shift；
 	unless(defined $threshold)
 	{
 		$threshold=0;
@@ -505,7 +508,18 @@ sub phy_clean
 		$threshold=1-$threshold;
 	}
 	open(PHY,$phy);
+	open(LIST,$list) if defined $list;
 	my @phy=(<PHY>);
+	my (@list,%list) if defined $list;
+	if (defined $list)
+	{
+		@list=(<LIST>);
+		foreach my $line(@list)
+		{
+			chomp $line;
+			$list{$line}=1;
+		}
+	}
 	my %hash1;
 	my %hash2;
 	my @loci=split(" ",$phy[0]);
@@ -516,8 +530,9 @@ sub phy_clean
 		my $name=$1;
 		my $seq=$2;
 		my $N=$seq=~tr/ACTG/ACTG/;
-		unless ($N <= $threshold * $loci[1])
+		unless ($N <= $threshold * $loci[1] || $list{$name})
 		{
+			print $name,"\n";
 			$hash1{$name}=$phy[$count];
 			$hash2{$name}=$nucleo_count;
 		}
@@ -527,6 +542,7 @@ sub phy_clean
 	foreach my $key (sort{ $hash2{$b} <=> $hash2{$a} } keys %hash2)
 	{
 		print $hash1{$key};
+		print 1,"\n";
 	}
 	close PHY;
 }
@@ -627,11 +643,13 @@ sub translate
 	shift;
 	my $fasta=shift;
 	my $input='';
-	my @header;
+	my (@header,@temp);
 	my $count=0;
 	my %code= &store_code;
 	open(FASTA,"$fasta");
-	foreach my $line(<FASTA>)
+	@temp=<FASTA>;
+	@temp=&fasta_format(@temp);
+	foreach my $line(@temp)
 	{
 		chomp $line;
 		if($line=~/>/)
@@ -890,9 +908,37 @@ q()
 CODE
 	close(R);
 }
+#alternatively, with() could be substituted by 
+#barplot(b[,"Freq"],main="test",cex.main=0.8,las=3,ylim=c(0,lim),font.main=2,names.arg=b[,"intervals"],cex.axis = 0.5,cex.names=0.45 )
+
 ###########################
 
+sub fasta_format
+{	
+	my @seq;
+	my $count=0;
+	my @file=@_;
+	foreach my $line(<FASTA>)
+	{	
+		if ($count !=0 && $line=~/>/)
+		{
+			$count++ ;
+		}
+		chomp $line;
+		if ($line=~/>/)
+		{
+		$seq[$count]=$line;
+		$count++;
+		}
+		else
+		{
+			$seq[$count]='' unless defined $seq[$count];
+			$seq[$count]=$seq[$count].$line;
+		}
 
+	}
+	return @seq;
+}	
 
 1;
 __END__
