@@ -485,21 +485,12 @@ sub Fastq2Fasta
 
 
 ###########################
-sub Fasta_stastic
-{
-	shift;
-	my $test='alsdjfalsdfjalsdf';
-	print $test,"\n";
-}
-
-
-###########################
 sub phy_clean
 {
 	shift;
 	my $phy=shift;
 	my $threshold=shift;
-	my $list=shift；
+	my $list=shift;
 	unless(defined $threshold)
 	{
 		$threshold=0;
@@ -532,7 +523,6 @@ sub phy_clean
 		my $N=$seq=~tr/ACTG/ACTG/;
 		unless ($N <= $threshold * $loci[1] || $list{$name})
 		{
-			print $name,"\n";
 			$hash1{$name}=$phy[$count];
 			$hash2{$name}=$nucleo_count;
 		}
@@ -542,7 +532,6 @@ sub phy_clean
 	foreach my $key (sort{ $hash2{$b} <=> $hash2{$a} } keys %hash2)
 	{
 		print $hash1{$key};
-		print 1,"\n";
 	}
 	close PHY;
 }
