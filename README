@@ -28,6 +28,9 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.18.2 or,
 at your option, any later version of Perl 5 you may have available.
 
+Notice:
+If you have miniconda installed, make sure,in your $PATH variable, /usr/bin/perl is before   the dir of minicoda/bin/
+
 ===================================================================================
 usage
 ===================================================================================

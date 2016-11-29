@@ -521,6 +521,8 @@ sub phy_clean
 		my $name=$1;
 		my $seq=$2;
 		my $N=$seq=~tr/ACTG/ACTG/;
+		$seq=~s/N/-/g;
+		$phy[$count]=$name." ".$seq."\n";
 		unless ($N <= $threshold * $loci[1] || $list{$name})
 		{
 			$hash1{$name}=$phy[$count];

@@ -187,12 +187,12 @@ TO_INST_PM = NextBio.pl \
 	lib/.DS_Store \
 	lib/NextBio/Utilities.pm
 
-PM_TO_BLIB = NextBio.pl \
-	$(INST_LIB)/NextBio/NextBio.pl \
+PM_TO_BLIB = lib/.DS_Store \
+	blib/lib/.DS_Store \
 	lib/NextBio/Utilities.pm \
 	blib/lib/NextBio/Utilities.pm \
-	lib/.DS_Store \
-	blib/lib/.DS_Store
+	NextBio.pl \
+	$(INST_LIB)/NextBio/NextBio.pl
 
 
 # --- MakeMaker platform_constants section:
@@ -443,22 +443,22 @@ clean_subdirs :
 
 clean :: clean_subdirs
 	- $(RM_F) \
-	  MYMETA.json $(INST_ARCHAUTODIR)/extralibs.ld \
-	  $(BASEEXT).exp core.[0-9] \
-	  core.[0-9][0-9] core.[0-9][0-9][0-9][0-9] \
-	  $(BOOTSTRAP) lib$(BASEEXT).def \
-	  $(INST_ARCHAUTODIR)/extralibs.all so_locations \
-	  $(MAKE_APERL_FILE) pm_to_blib.ts \
-	  tmon.out $(BASEEXT).bso \
 	  $(BASEEXT).def core.[0-9][0-9][0-9] \
-	  *perl.core *$(OBJ_EXT) \
-	  perl.exe pm_to_blib \
-	  mon.out *$(LIB_EXT) \
-	  perlmain.c perl \
-	  core MYMETA.yml \
-	  core.[0-9][0-9][0-9][0-9][0-9] $(BASEEXT).x \
-	  perl$(EXE_EXT) core.*perl.*.? \
-	  blibdirs.ts 
+	  core.[0-9][0-9][0-9][0-9][0-9] blibdirs.ts \
+	  core.*perl.*.? $(INST_ARCHAUTODIR)/extralibs.all \
+	  $(MAKE_APERL_FILE) mon.out \
+	  pm_to_blib.ts *perl.core \
+	  $(BASEEXT).x core \
+	  perlmain.c core.[0-9][0-9][0-9][0-9] \
+	  MYMETA.yml perl.exe \
+	  $(BASEEXT).exp $(INST_ARCHAUTODIR)/extralibs.ld \
+	  $(BASEEXT).bso so_locations \
+	  $(BOOTSTRAP) MYMETA.json \
+	  perl$(EXE_EXT) *$(OBJ_EXT) \
+	  *$(LIB_EXT) pm_to_blib \
+	  tmon.out lib$(BASEEXT).def \
+	  core.[0-9] core.[0-9][0-9] \
+	  perl 
 	- $(RM_RF) \
 	  blib 
 	- $(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD) $(DEV_NULL)
@@ -851,9 +851,9 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  NextBio.pl $(INST_LIB)/NextBio/NextBio.pl \
+	  lib/.DS_Store blib/lib/.DS_Store \
 	  lib/NextBio/Utilities.pm blib/lib/NextBio/Utilities.pm \
-	  lib/.DS_Store blib/lib/.DS_Store 
+	  NextBio.pl $(INST_LIB)/NextBio/NextBio.pl 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 
