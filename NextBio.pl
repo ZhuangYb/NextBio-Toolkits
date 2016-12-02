@@ -110,7 +110,7 @@ my $usage=
 --header		string used to modify fasta header, use with fasta_uniq
 --order			up or down used with fasta_sort, default is upward
 --length    		read length less than specified value will be removed
---list			Contains list of file names or fasta header
+--list or -l			Contains list of file names or fasta header
 --phy 			.phy file to process
 --overhang 		enzyme overhang you want to detect on 5'
 --threshold 		floating point value of missing data allowed for samples (default 0.9999)
