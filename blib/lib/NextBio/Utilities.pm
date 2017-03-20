@@ -840,7 +840,7 @@ sub ploidy
 		}
 		elsif($length ==2)
 		{
-			open(BOWTIE2,"|bowtie2 --no-unal --sensitive -x ./Bowtie_index/$index -1 $fastq[0] -2 $fastq[1] -S  $index.mapped.sam") or die "Error generating $index.mapped.sam file!\n";
+			open(BOWTIE2,"|bowtie2 -p 4 --no-unal --sensitive -x ./Bowtie_index/$index -1 $fastq[0] -2 $fastq[1] -S  $index.mapped.sam") or die "Error generating $index.mapped.sam file!\n";
 			select(BOWTIE2);
 			close(BOWTIE2);
 		}
@@ -931,13 +931,124 @@ sub fasta_format
 	return @seq;
 }	
 
+############################
+sub phy_sub
+{
+	shift;
+	my $phy=shift;
+	my $base=shift;
+	my $raise=shift;
+	my $count=0;
+	my (@temp,@entry,$i,@pos,%hashn,%hashm,%hashe,@sort,@pos_f);
+	open (PHY,$phy);
+	foreach my $line(<PHY>)
+	{	
+		if($count>0)
+		{
+			@temp=split(" ",$line);
+			@entry=split("",$temp[1]);
+			for($i=0;$i<=$#entry;$i++)
+			{
+				unless($entry[$i] eq '-')
+				{
+					push @pos,$i;
+				}
+			}
+			$hashn{$temp[0]}=@pos;
+			$hashm{$temp[0]}=@entry;
+			$hashe{$temp[0]}=scalar @pos;
+			$count++;
+		}
+		else
+		{
+			print $line;
+		}
+	}
+	close PHY;
+	#sort entry by number of allels
+	foreach my $key(sort{$hashe{$a} <=> $hashe{$b}} keys %hashe)
+	{
+		push @sort,$key;
+	}
+	$count=0;
+	for my $name(@sort)
+	{
+		my $limit= 1- $count*$raise;
+		if($count==0)
+		{
+			@pos_f=$hashn{$name};
+		}
+		else
+		{
+			my @temp=$hashn{$name};
+			my @uniq= array2uniq(\@pos_f,\@temp);
+			my $all_pos_length=@temp;
+			my $uniq_pos_length=@uniq;
+			my $p=1-($uniq_pos_length/$all_pos_length);
+			if($p>$limit)
+			{
+				next;
+			}
+			else
+			{
+				my $add_p= $limit-$p;
+				my $add_index=int($uniq_pos_length*$add_p);
+				push @pos_f,@uniq[0..$add_index];
+				@pos_f=uniq_array(\@pos_f);
+			}
+		}
+		$count++;
+	}
+	@pos_f=sort @pos_f;
+#print 
+	foreach my $final(@sort)
+	{
+		print $final,"\t";
+		foreach my $final_pos(@pos_f)
+		{
+			print $hashm{$final}[$final_pos];
+		}
+		print "\n";
+	}
+}
+
+sub arrary2uniq
+{	
+	my @uniq;
+	my $array1=shift;
+	my $array2=shift;
+	for my $ele1(@{$array2})
+	{
+		my $check =0; 
+		for my $ele2(@{$array1})
+		{
+			$check=1 if $ele1 == $ele2;
+		}
+		push @uniq,$ele1 if $check ==0;
+	}
+	return @uniq;
+}
+sub uniq_array
+{
+	my $array=shift;
+	my (@array2,%hash);
+	foreach my $line(@{$array})
+	{
+			$hash{$line}=1;
+	}
+	foreach my $line(keys %hash)
+	{
+		push  @array2,$line;
+	}
+	return @array2;
+}
+
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-NextBio::Utilities - Perl extension for blah blah blah
+NextBio::Utilities - Perl extension for Next generation sequencing data manipulation
 
 =head1 SYNOPSIS
 

@@ -17,12 +17,18 @@ GetOptions(
 		   'overhang=s'	 =>\$opts{overhang},
 		   't|threshold=f'  =>\$opts{threshold},
 		   'depth=i'  =>\$opts{depth},	
-		   'stage=i'  =>\$opts{stage},	   
-
+		   'stage=i'  =>\$opts{stage},
+		   'base=f'	  =>\$opts{base},
+		   'raise=f'   =>\$opts{raise}
 		  );
  
 $handle=NextBio::Utilities->new();
 
+# Set default values
+$opts{base}=10 if !defined $opts{base};
+$opts{raise}=1.5 if !defined $opts{raise};
+
+# Main call
 if($opts{help} or !defined $opts{function})
 {
  	print "\n There is somthing wrong with your command line !!!!\n";
@@ -97,6 +103,10 @@ elsif($opts{function} eq 'ploidy')
 {
 	$handle->ploidy($opts{fasta},\@fastq,$opts{depth},$opts{header},$opts{stage})
 }
+elsif($opts{function} eq 'physub')
+{
+	$handle->phy_sub($opts{phy},$opts{base},$opts{raise})
+}
 
 
 sub help
@@ -110,7 +120,7 @@ my $usage=
 --header		string used to modify fasta header, use with fasta_uniq
 --order			up or down used with fasta_sort, default is upward
 --length    		read length less than specified value will be removed
---list			Contains list of file names or fasta header
+--list or -l			Contains list of file names or fasta header
 --phy 			.phy file to process
 --overhang 		enzyme overhang you want to detect on 5'
 --threshold 		floating point value of missing data allowed for samples (default 0.9999)

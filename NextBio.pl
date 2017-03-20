@@ -17,12 +17,18 @@ GetOptions(
 		   'overhang=s'	 =>\$opts{overhang},
 		   't|threshold=f'  =>\$opts{threshold},
 		   'depth=i'  =>\$opts{depth},	
-		   'stage=i'  =>\$opts{stage},	   
-
+		   'stage=i'  =>\$opts{stage},
+		   'base=f'	  =>\$opts{base},
+		   'raise=f'   =>\$opts{raise}
 		  );
  
 $handle=NextBio::Utilities->new();
 
+# Set default values
+$opts{base}=10 if !defined $opts{base};
+$opts{raise}=1.5 if !defined $opts{raise};
+
+# Main call
 if($opts{help} or !defined $opts{function})
 {
  	print "\n There is somthing wrong with your command line !!!!\n";
@@ -96,6 +102,10 @@ elsif($opts{function} eq 'translate')
 elsif($opts{function} eq 'ploidy')
 {
 	$handle->ploidy($opts{fasta},\@fastq,$opts{depth},$opts{header},$opts{stage})
+}
+elsif($opts{function} eq 'physub')
+{
+	$handle->phy_sub($opts{phy},$opts{base},$opts{raise})
 }
 
 
