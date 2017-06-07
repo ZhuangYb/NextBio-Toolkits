@@ -974,6 +974,7 @@ sub phy_sub
 	for my $name(@sort)
 	{
 		my $limit= 1- $count*$raise;
+		$limit=$base if $limit<$base;
 		if($count==0)
 		{
 			@pos_f=$hashn{$name};

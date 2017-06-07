@@ -25,8 +25,8 @@ GetOptions(
 $handle=NextBio::Utilities->new();
 
 # Set default values
-$opts{base}=10 if !defined $opts{base};
-$opts{raise}=1.5 if !defined $opts{raise};
+$opts{base}=0.3 if !defined $opts{base};
+$opts{raise}=0.03 if !defined $opts{raise};
 
 # Main call
 if($opts{help} or !defined $opts{function})
@@ -103,7 +103,7 @@ elsif($opts{function} eq 'ploidy')
 {
 	$handle->ploidy($opts{fasta},\@fastq,$opts{depth},$opts{header},$opts{stage})
 }
-elsif($opts{function} eq 'physub')
+elsif($opts{function} eq 'phy_sub')
 {
 	$handle->phy_sub($opts{phy},$opts{base},$opts{raise})
 }
@@ -125,6 +125,8 @@ my $usage=
 --overhang 		enzyme overhang you want to detect on 5'
 --threshold 		floating point value of missing data allowed for samples (default 0.9999)
 --depth			minimum depth for a snp to be involved in ploidy analysis
+--base          minimum percentage of alleles to be subsample(0~1,default 0.3)
+--raise			increased percentage of alleles to be added (0~1,default 0.03)
 
 Deamon uage:
 #################################  Build-in function ##############################
@@ -157,6 +159,9 @@ Deamon uage:
 
 # remove samples contains only Ns and names in list.txt and sort the samples based on number of informative bases
 ./NextBio.pl -f phy_clean --phy ../Pcp.phy --list list.txt --threshold 0.8 >../Pcp_60_cleaned.phy 
+
+# subsample phylip file
+./NextBio.pl -f phy_sub --phy Pcp.phy --base 0.3 --raise 0.03 
 
 # remove sequences not start with expected enzyme cutting overhang in fastq file
 ./NextBio.pl -f overhang_check --fastq test.q --overhang TTCA
