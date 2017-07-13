@@ -1,5 +1,5 @@
 {
-   "abstract" : "Perl extension for Next generation sequencing data manipulation",
+   "abstract" : "unknown",
    "author" : [
       "Yongbin <Yongbin@apple.com>"
    ],
@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "NextBio-Utilities",
+   "name" : "NextBio-Toolkits",
    "no_index" : {
       "directory" : [
          "t",
@@ -36,5 +36,5 @@
    },
    "release_status" : "stable",
    "version" : "0.01",
-   "x_serialization_backend" : "JSON::PP version 2.27300_01"
+   "x_serialization_backend" : "JSON::PP version 2.27300"
 }

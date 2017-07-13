@@ -1,4 +1,4 @@
-package NextBio::Utilities;
+package NextBio::Toolkits;
 
 
 use strict;
@@ -516,11 +516,11 @@ sub phy_clean
 	my @loci=split(" ",$phy[0]);
 	for(my $count=1;$count<=$#phy;$count++)
 	{
-		my $nucleo_count=$phy[$count]=~tr/ACTG/ATCG/;
+		my $nucleo_count=$phy[$count]=~tr/ACTGactg/ATCGactg/;
 		$phy[$count]=~/(.+?)\s+(.+)/;
 		my $name=$1;
 		my $seq=$2;
-		my $N=$seq=~tr/ACTG/ACTG/;
+		my $N=$seq=~tr/ACTGactg/ACTGactg/;
 		$seq=~s/N/-/g if $seq=~/N/;
 		$phy[$count]=$name." ".$seq."\n";
 		unless ($N <= $threshold * $loci[1] || $list{$name})
@@ -941,28 +941,35 @@ sub phy_sub
 	my $count=0;
 	my (@temp,@entry,$i,@pos,%hashn,%hashm,%hashe,@sort,@pos_f);
 	open (PHY,$phy);
+	
 	foreach my $line(<PHY>)
 	{	
-		if($count>0)
+		@pos=();
+		my $pos=0;	
+		if($count==0)
+		{
+			print $line;
+			$count++;
+		}
+		elsif($count>0)
 		{
 			@temp=split(" ",$line);
 			@entry=split("",$temp[1]);
 			for($i=0;$i<=$#entry;$i++)
 			{
-				unless($entry[$i] eq '-')
+				
+				unless($entry[$i] eq '-' )
 				{
 					push @pos,$i;
+					$pos=$pos.":".$i;
 				}
 			}
-			$hashn{$temp[0]}=@pos;
-			$hashm{$temp[0]}=@entry;
+			$hashn{$temp[0]}=$pos;
+			$hashm{$temp[0]}=$temp[1];
 			$hashe{$temp[0]}=scalar @pos;
 			$count++;
 		}
-		else
-		{
-			print $line;
-		}
+	
 	}
 	close PHY;
 	#sort entry by number of allels
@@ -970,50 +977,55 @@ sub phy_sub
 	{
 		push @sort,$key;
 	}
+	
 	$count=0;
 	for my $name(@sort)
 	{
+		my @temp=split(":",$hashn{$name});
 		my $limit= 1- $count*$raise;
 		$limit=$base if $limit<$base;
 		if($count==0)
 		{
-			@pos_f=$hashn{$name};
+			@pos_f=@temp;
+			$count++;
 		}
 		else
 		{
-			my @temp=$hashn{$name};
 			my @uniq= array2uniq(\@pos_f,\@temp);
 			my $all_pos_length=@temp;
+			print "here is all_pos_length: $name :",$all_pos_length,"\n";
 			my $uniq_pos_length=@uniq;
+			print "here is uniq_pos_length: ",$uniq_pos_length,"\n";
+
 			my $p=1-($uniq_pos_length/$all_pos_length);
-			if($p>$limit)
+			print "here is p: ",$p," ","here is limit: ","$limit","\n";
+			if($p<$limit)
 			{
-				next;
-			}
-			else
-			{
+			
 				my $add_p= $limit-$p;
 				my $add_index=int($uniq_pos_length*$add_p);
-				push @pos_f,@uniq[0..$add_index];
-				@pos_f=uniq_array(\@pos_f);
+				print "here is add_index: ",$add_index,"\n";
+				@pos_f=(@pos_f,@uniq[0..$add_index]);
+				#@pos_f=uniq_array(\@pos_f);
 			}
 		}
-		$count++;
 	}
-	@pos_f=sort @pos_f;
+	#@pos_f=sort @pos_f;
 #print 
-	foreach my $final(@sort)
-	{
-		print $final,"\t";
-		foreach my $final_pos(@pos_f)
-		{
-			print $hashm{$final}[$final_pos];
-		}
-		print "\n";
-	}
+	#foreach my $name(@sort)
+	#{
+	#	my @seq=split("",$hashm{$name});
+		#print $name,"\t";
+	#	foreach my $final_pos(@pos_f)
+	#	{
+			
+		#	print $seq[$final_pos];
+	#	}
+		#print "\n";
+#	}
 }
 
-sub arrary2uniq
+sub array2uniq
 {	
 	my @uniq;
 	my $array1=shift;
@@ -1032,16 +1044,10 @@ sub arrary2uniq
 sub uniq_array
 {
 	my $array=shift;
-	my (@array2,%hash);
-	foreach my $line(@{$array})
-	{
-			$hash{$line}=1;
-	}
-	foreach my $line(keys %hash)
-	{
-		push  @array2,$line;
-	}
-	return @array2;
+	my @array=@{$array};
+	my %seen;
+    my @array2= grep !$seen{$_}++, @array;
+ 	return @array2
 }
 
 1;

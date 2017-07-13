@@ -1,4 +1,4 @@
-package NextBio::Utilities;
+package NextBio::Toolkits;
 
 
 use strict;
@@ -516,11 +516,11 @@ sub phy_clean
 	my @loci=split(" ",$phy[0]);
 	for(my $count=1;$count<=$#phy;$count++)
 	{
-		my $nucleo_count=$phy[$count]=~tr/ACTG/ATCG/;
+		my $nucleo_count=$phy[$count]=~tr/ACTGactg/ATCGactg/;
 		$phy[$count]=~/(.+?)\s+(.+)/;
 		my $name=$1;
 		my $seq=$2;
-		my $N=$seq=~tr/ACTG/ACTG/;
+		my $N=$seq=~tr/ACTGactg/ACTGactg/;
 		$seq=~s/N/-/g if $seq=~/N/;
 		$phy[$count]=$name." ".$seq."\n";
 		unless ($N <= $threshold * $loci[1] || $list{$name})

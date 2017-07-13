@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
-use lib '/Users/Yongbin/Desktop/Toolkit/NextBio-Utilities/lib';
-use NextBio::Utilities;
+use lib '/Users/Yongbin/Desktop/Toolkit/NextBio-Toolkits/lib';
+use NextBio::Toolkits;
 use Getopt::Long;
 my  (%opts,@fastq);
 my  ($handle);
@@ -23,7 +23,7 @@ GetOptions(
 		   'raise=f'   =>\$opts{raise}
 		  );
  
-$handle=NextBio::Utilities->new();
+$handle=NextBio::Toolkits->new();
 
 # Set default values
 $opts{base}=0.3 if !defined $opts{base};

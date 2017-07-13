@@ -1,5 +1,5 @@
 ---
-abstract: 'Perl extension for Next generation sequencing data manipulation'
+abstract: unknown
 author:
   - 'Yongbin <Yongbin@apple.com>'
 build_requires:
@@ -12,7 +12,7 @@ license: unknown
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: '1.4'
-name: NextBio-Utilities
+name: NextBio-Toolkits
 no_index:
   directory:
     - t

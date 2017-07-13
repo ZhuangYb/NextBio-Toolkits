@@ -1,4 +1,4 @@
-# This Makefile is for the NextBio::Utilities extension to perl.
+# This Makefile is for the NextBio::Toolkits extension to perl.
 #
 # It was generated automatically by MakeMaker version
 # 7.1002 (Revision: 71002) from the contents of
@@ -11,14 +11,14 @@
 
 #   MakeMaker Parameters:
 
-#     ABSTRACT_FROM => q[lib/NextBio/Utilities.pm]
+#     ABSTRACT_FROM => q[lib/NextBio/Toolkits.pm]
 #     AUTHOR => [q[Yongbin <Yongbin@apple.com>]]
 #     BUILD_REQUIRES => {  }
 #     CONFIGURE_REQUIRES => {  }
-#     NAME => q[NextBio::Utilities]
+#     NAME => q[NextBio::Toolkits]
 #     PREREQ_PM => {  }
 #     TEST_REQUIRES => {  }
-#     VERSION_FROM => q[lib/NextBio/Utilities.pm]
+#     VERSION_FROM => q[lib/NextBio/Toolkits.pm]
 
 # --- MakeMaker post_initialize section:
 
@@ -55,8 +55,8 @@ VENDORLIBEXP =
 AR_STATIC_ARGS = cr
 DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
-NAME = NextBio::Utilities
-NAME_SYM = NextBio_Utilities
+NAME = NextBio::Toolkits
+NAME_SYM = NextBio_Toolkits
 VERSION = 0.01
 VERSION_MACRO = VERSION
 VERSION_SYM = 0_01
@@ -147,11 +147,11 @@ MM_REVISION = 71002
 # PARENT_NAME = NAME without BASEEXT and no trailing :: (eg Foo::Bar)
 # DLBASE  = Basename part of dynamic library. May be just equal BASEEXT.
 MAKE = make
-FULLEXT = NextBio/Utilities
-BASEEXT = Utilities
+FULLEXT = NextBio/Toolkits
+BASEEXT = Toolkits
 PARENT_NAME = NextBio
 DLBASE = $(BASEEXT)
-VERSION_FROM = lib/NextBio/Utilities.pm
+VERSION_FROM = lib/NextBio/Toolkits.pm
 OBJECT = 
 LDFROM = $(OBJECT)
 LINKTYPE = dynamic
@@ -163,7 +163,7 @@ C_FILES  =
 O_FILES  = 
 H_FILES  = 
 MAN1PODS = 
-MAN3PODS = lib/NextBio/Utilities.pm
+MAN3PODS = lib/NextBio/Toolkits.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIBDEP)$(DFSEP)Config.pm $(PERL_INCDEP)$(DFSEP)config.h
@@ -188,14 +188,17 @@ PERL_ARCHIVE_AFTER =
 
 TO_INST_PM = NextBio.pl \
 	lib/.DS_Store \
-	lib/NextBio/Utilities.pm
+	lib/NextBio/Toolkits.pm \
+	lib/NextBio/plot.pl
 
 PM_TO_BLIB = NextBio.pl \
 	$(INST_LIB)/NextBio/NextBio.pl \
 	lib/.DS_Store \
 	blib/lib/.DS_Store \
-	lib/NextBio/Utilities.pm \
-	blib/lib/NextBio/Utilities.pm
+	lib/NextBio/Toolkits.pm \
+	blib/lib/NextBio/Toolkits.pm \
+	lib/NextBio/plot.pl \
+	blib/lib/NextBio/plot.pl
 
 
 # --- MakeMaker platform_constants section:
@@ -264,8 +267,8 @@ CI = ci -u
 RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
-DISTNAME = NextBio-Utilities
-DISTVNAME = NextBio-Utilities-0.01
+DISTNAME = NextBio-Toolkits
+DISTVNAME = NextBio-Toolkits-0.01
 
 
 # --- MakeMaker macro section:
@@ -418,9 +421,9 @@ POD2MAN = $(POD2MAN_EXE)
 
 
 manifypods : pure_all  \
-	lib/NextBio/Utilities.pm
+	lib/NextBio/Toolkits.pm
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) -u \
-	  lib/NextBio/Utilities.pm $(INST_MAN3DIR)/NextBio::Utilities.$(MAN3EXT) 
+	  lib/NextBio/Toolkits.pm $(INST_MAN3DIR)/NextBio::Toolkits.$(MAN3EXT) 
 
 
 
@@ -487,7 +490,7 @@ realclean purge ::  clean realclean_subdirs
 metafile : create_distdir
 	$(NOECHO) $(ECHO) Generating META.yml
 	$(NOECHO) $(ECHO) '---' > META_new.yml
-	$(NOECHO) $(ECHO) 'abstract: '\''Perl extension for Next generation sequencing data manipulation'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'abstract: unknown' >> META_new.yml
 	$(NOECHO) $(ECHO) 'author:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  - '\''Yongbin <Yongbin@apple.com>'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'build_requires:' >> META_new.yml
@@ -500,7 +503,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) 'meta-spec:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  url: http://module-build.sourceforge.net/META-spec-v1.4.html' >> META_new.yml
 	$(NOECHO) $(ECHO) '  version: '\''1.4'\''' >> META_new.yml
-	$(NOECHO) $(ECHO) 'name: NextBio-Utilities' >> META_new.yml
+	$(NOECHO) $(ECHO) 'name: NextBio-Toolkits' >> META_new.yml
 	$(NOECHO) $(ECHO) 'no_index:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  directory:' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
@@ -511,7 +514,7 @@ metafile : create_distdir
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
 	$(NOECHO) $(ECHO) '{' > META_new.json
-	$(NOECHO) $(ECHO) '   "abstract" : "Perl extension for Next generation sequencing data manipulation",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "abstract" : "unknown",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "author" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '      "Yongbin <Yongbin@apple.com>"' >> META_new.json
 	$(NOECHO) $(ECHO) '   ],' >> META_new.json
@@ -524,7 +527,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",' >> META_new.json
 	$(NOECHO) $(ECHO) '      "version" : "2"' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
-	$(NOECHO) $(ECHO) '   "name" : "NextBio-Utilities",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "name" : "NextBio-Toolkits",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "no_index" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '      "directory" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '         "t",' >> META_new.json
@@ -548,7 +551,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
 	$(NOECHO) $(ECHO) '   "release_status" : "stable",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "version" : "0.01",' >> META_new.json
-	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 2.27300_01"' >> META_new.json
+	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 2.27300"' >> META_new.json
 	$(NOECHO) $(ECHO) '}' >> META_new.json
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
 
@@ -850,7 +853,7 @@ testdb_static :: testdb_dynamic
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
 	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="$(VERSION)">' > $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '    <ABSTRACT>Perl extension for Next generation sequencing data manipulation</ABSTRACT>' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT></ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Yongbin &lt;Yongbin@apple.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="darwin-2level-5.24" />' >> $(DISTNAME).ppd
@@ -865,7 +868,8 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
 	  NextBio.pl $(INST_LIB)/NextBio/NextBio.pl \
 	  lib/.DS_Store blib/lib/.DS_Store \
-	  lib/NextBio/Utilities.pm blib/lib/NextBio/Utilities.pm 
+	  lib/NextBio/Toolkits.pm blib/lib/NextBio/Toolkits.pm \
+	  lib/NextBio/plot.pl blib/lib/NextBio/plot.pl 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 
